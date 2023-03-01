@@ -7,19 +7,15 @@ import scala.annotation.tailrec
 
 object Main extends App {
 
-
-
   private val DAYS_OF_WEEK = List("M", "T", "W", "Th", "F", "S", "Su")
   type DowTimePeople = (String, TimeRange, List[String])
   private def main(): Unit = {
 
-    val lines: String = FileReader.readFile("data/freetime.csv")
-
-//    println(lines)
+    val lines: String = FileReader.readFile(
+      "data/When are you available to play badminton_ - ลงเวลา.csv"
+    )
 
     val parsed = SimpleCSVParser.parse(lines, omitFirstLine = false)
-
-//    println(parsed)
 
     val availableTimeAndPeople = findAvailableTimeAndPeople(parsed)
 
@@ -38,9 +34,13 @@ object Main extends App {
     }
   }
 
-  private def getOnlyDaysWithMaxPeople(dowTimePeoples : List[DowTimePeople]): List[DowTimePeople] = {
+  private def getOnlyDaysWithMaxPeople(
+      dowTimePeoples: List[DowTimePeople]
+  ): List[DowTimePeople] = {
     val maxPeopleCount = dowTimePeoples.maxBy(_._3.length)._3.length
-    dowTimePeoples.filter((x : (String, TimeRange, List[String])) => x._3.length == maxPeopleCount )
+    dowTimePeoples.filter((x: (String, TimeRange, List[String])) =>
+      x._3.length == maxPeopleCount
+    )
   }
 
   private def findAvailableTimeAndPeople(
