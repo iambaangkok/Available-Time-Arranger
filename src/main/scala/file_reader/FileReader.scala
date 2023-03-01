@@ -5,13 +5,8 @@ import scala.io.Source
 
 object FileReader {
 
+  def readFile(filePath : String) : String = {
+    Source.fromFile(filePath).mkString
+  }
 
-
-}
-
-class FileReader(val filePath : String) {
-  private val source = Source.fromFile(filePath)
-  private val lines = try source.mkString finally source.close()
-
-  def getLines() : String = lines
 }

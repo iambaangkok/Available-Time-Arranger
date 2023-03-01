@@ -5,11 +5,11 @@ import file_reader.FileReader
 
 object Main extends App{
 
-  private val fileReader: FileReader = new FileReader("data/freetime.csv")
+  private val lines : String = FileReader.readFile("data/freetime.csv")
 
-  println(fileReader.getLines())
+  println(lines)
 
-  private val csvParser = new SimpleCSVParser(fileReader.getLines());
+  private val parsed = SimpleCSVParser.parse(lines);
 
-  csvParser.parse();
+  println(parsed)
 }
