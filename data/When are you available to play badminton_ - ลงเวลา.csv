@@ -1,0 +1,32 @@
+Active,Name,Day of week,Free time start,Free time end
+1,BK,M,800,2000
+1,BK,T,1800,2000
+0,BK,W,1530,2000
+1,BK,Th,1600,2000
+1,BK,F,1800,2000
+0,BK,S,1300,2000
+0,BK,Su,1300,2000
+,,,,
+1,Hope,M,1600,2000
+1,Hope,T,1200,2000
+0,Hope,W,1200,2000
+0,Hope,Th,1600,2000
+0,Hope ,F,1600,2000
+1,Hope,S,1200,2000
+1,Hope,Su,1200,2000
+,,,,
+1,Earn,M,1700,2000
+0,Earn,T,1700,2000
+0,Earn,W,1200,2000
+1,Earn,Th,1530,2000
+1,Earn,F,1700,2000
+0,Earn,S,1300,2000
+0,Earn,Su,1300,2000
+,,,,
+1,Khawhom,M,800,2000
+0,Khawhom,T,1700,2000
+0,Khawhom,W,1200,2000
+0,Khawhom,Th,1530,2000
+1,Khawhom,F,1700,2000
+1,Khawhom,S,1300,2000
+1,Khawhom,Su,1300,2000
