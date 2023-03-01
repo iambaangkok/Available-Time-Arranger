@@ -1,5 +1,5 @@
 *.class
 *.log
-*.idea
-*.bsp
-*.target
+.idea
+.bsp
+.target
