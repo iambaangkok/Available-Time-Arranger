@@ -5,8 +5,12 @@ import scala.io.Source
 
 object FileReader {
 
-  def readFile(filePath : String) : String = {
-    Source.fromFile(filePath).mkString
+  def readFile(filePath: String): String = {
+    val src = Source.fromFile(filePath)
+    val inputString = src.mkString
+    src.close()
+
+    inputString
   }
 
 }
