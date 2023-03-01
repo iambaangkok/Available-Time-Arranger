@@ -2,4 +2,4 @@
 *.log
 .idea
 .bsp
-.target
+target
