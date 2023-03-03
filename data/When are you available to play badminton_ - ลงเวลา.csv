@@ -10,12 +10,12 @@ Active,Name,Day of week,Free time start,Free time end
 1,Hope,M,1600,2000
 1,Hope,T,1200,2000
 0,Hope,W,1200,2000
-0,Hope,Th,1600,2000
+1,Hope,Th,1600,2000
 0,Hope ,F,1600,2000
 1,Hope,S,1200,2000
 1,Hope,Su,1200,2000
 ,,,,
-1,Earn,M,1700,2000
+1,Earn,M,1500,2000
 0,Earn,T,1700,2000
 0,Earn,W,1200,2000
 1,Earn,Th,1530,2000
@@ -30,3 +30,8 @@ Active,Name,Day of week,Free time start,Free time end
 1,Khawhom,F,1700,2000
 1,Khawhom,S,1300,2000
 1,Khawhom,Su,1300,2000
+,,,,
+1,Nut,M,1700,2000
+0,Nut,T,1700,2000
+0,Nut,W,1500,2000
+0,Nut,Th,1700,2000

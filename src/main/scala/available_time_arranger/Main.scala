@@ -11,12 +11,15 @@ object Main extends App {
   type DowTimePeople = (String, TimeRange, List[String])
   private def main(): Unit = {
 
+    // Read file
     val lines: String = FileReader.readFile(
       "data/When are you available to play badminton_ - ลงเวลา.csv"
     )
 
+    // Parse CSV
     val parsed = SimpleCSVParser.parse(lines, omitFirstLine = false)
 
+    // Outputs
     val availableTimeAndPeople = findAvailableTimeAndPeople(parsed)
 
     println()
@@ -30,6 +33,14 @@ object Main extends App {
     println()
     println("Only days with max people:")
     for (dowTimePeople <- daysWithMaxPeople) {
+      println(dowTimePeople)
+    }
+
+    val sortedByPeopleCount = availableTimeAndPeople.sortBy(_._3.length).reverse
+
+    println()
+    println("Sorted by people count:")
+    for (dowTimePeople <- sortedByPeopleCount) {
       println(dowTimePeople)
     }
   }
