@@ -13,36 +13,29 @@ object Main extends App {
 
     // Read file
     val lines: String = FileReader.readFile(
-      "data/When are you available to play badminton_ - ลงเวลา.csv"
+      "data/When are you available to play badminton_ - ลงเวลา_2.csv"
     )
 
     // Parse CSV
     val parsed = SimpleCSVParser.parse(lines, omitFirstLine = false)
 
-    // Outputs
     val availableTimeAndPeople = findAvailableTimeAndPeople(parsed)
-
-    println()
-    println("Available time and people each day:")
-    for (pair <- availableTimeAndPeople) {
-      println(pair)
-    }
-
     val daysWithMaxPeople = getOnlyDaysWithMaxPeople(availableTimeAndPeople)
-
-    println()
-    println("Only days with max people:")
-    for (dowTimePeople <- daysWithMaxPeople) {
-      println(dowTimePeople)
-    }
-
     val sortedByPeopleCount = availableTimeAndPeople.sortBy(_._3.length).reverse
+    // Outputs
 
-    println()
-    println("Sorted by people count:")
-    for (dowTimePeople <- sortedByPeopleCount) {
+    printDowTimePeopleList(availableTimeAndPeople, Some("Available time and people each day:"))
+    printDowTimePeopleList(daysWithMaxPeople, Some("Only days with max people:"))
+    printDowTimePeopleList(sortedByPeopleCount, Some("Sorted by people count:"))
+
+  }
+
+  private def printDowTimePeopleList( dowTimePeopleList: List[DowTimePeople], message: Option[String] = None): Unit = {
+    println(message.getOrElse(""))
+    for (dowTimePeople <- dowTimePeopleList) {
       println(dowTimePeople)
     }
+    println()
   }
 
   private def getOnlyDaysWithMaxPeople(
