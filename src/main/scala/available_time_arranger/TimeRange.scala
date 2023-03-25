@@ -14,7 +14,7 @@ class TimeRange(val start: Int = 0, val end: Int = 2400) {
   }
 
   def isValidTime: Boolean = {
-    start >= 0 && start <= 2400 && end >= 0 && end <= 2400 && start <= end
+    start >= 0 && start <= 2400 && end >= 0 && end <= 2400 && start < end
   }
 
   override def toString: String = {

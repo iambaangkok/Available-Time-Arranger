@@ -8,8 +8,8 @@ import scala.annotation.tailrec
 object Main extends App {
 
   private val DAYS_OF_WEEK = List("M", "T", "W", "Th", "F", "S", "Su")
-  private val EXCLUDE_PEOPLE = List("NuT", "Earn")
-  private val EXCLUDE_DOW = List("M", "T", "W", "Th", "S", "Su")
+  private val EXCLUDE_PEOPLE = List("Nut", "Earn")
+  private val EXCLUDE_DOW = List()//List("M", "T", "W", "Th", "S", "Su")
   type Dow = String
   type Name = String
   type DowTimePeople = (Dow, TimeRange, List[Name])
@@ -24,24 +24,28 @@ object Main extends App {
     // Parse CSV
     val parsed = SimpleCSVParser.parse(lines, omitFirstLine = false)
 
+    val timeData = parsedCSVToTimeDataList(parsed)
+    val filteredTimeData =
+      timeData.filter(td => !EXCLUDE_PEOPLE.contains(td.name))
 
-
-    val availableTimeAndPeople = findAvailableTimeAndPeopleV2(parsed)
-    val daysWithMaxPeople = getOnlyDaysWithMaxPeople(availableTimeAndPeople)
+    // Calculations
+    val availableTimeAndPeople = findAvailableTimeAndPeopleV2(filteredTimeData)
+    val daysWithMaxPeople = getOnlyDaysWithMaxPeopleV2(availableTimeAndPeople)
     val sortedByPeopleCount = availableTimeAndPeople.sortBy(_._3.length).reverse
+
     // Outputs
 
     printDowTimePeopleList(
       availableTimeAndPeople,
       Some("Available time and people each day:")
     )
-//    printDowTimePeopleList(daysWithMaxPeople, Some("Only days with max people:"))
-//    printDowTimePeopleList(sortedByPeopleCount, Some("Sorted by people count:"))
+    printDowTimePeopleList(daysWithMaxPeople, Some("Only days with max people:"))
+    printDowTimePeopleList(sortedByPeopleCount, Some("Sorted by people count:"))
 
   }
 
   private def printDowTimePeopleList(
-      dowTimePeopleList: List[DowTimePeople],
+      dowTimePeopleList: List[Any],
       message: Option[String] = None
   ): Unit = {
     println(message.getOrElse(""))
@@ -60,11 +64,19 @@ object Main extends App {
     )
   }
 
+  private def getOnlyDaysWithMaxPeopleV2(
+      dowTimePeoples: List[DowTimePeopleV2]
+  ): List[DowTimePeopleV2] = {
+    val maxPeopleCount = dowTimePeoples.maxBy(_._3.length)._3.length
+    dowTimePeoples.filter(x => x._3.length == maxPeopleCount)
+  }
+
   private def findAvailableTimeAndPeople(
       parsedCSV: List[List[String]]
   ): List[DowTimePeople] = {
     DAYS_OF_WEEK.map((dow: String) => {
-      val timeData = parsedCSVToTimeDataList(parsedCSV, dow)
+      val timeData =
+        parsedCSVToTimeDataList(parsedCSV).filter(td => td.dow == dow)
 
       val availableTime = findAvailableTime(timeData, new TimeRange())
       val availablePeople = findAvailablePeople(availableTime, timeData)
@@ -74,8 +86,8 @@ object Main extends App {
   }
 
   private def findAvailableTimeAndPeopleV2(
-      parsedCSV: List[List[String]]
-  ): List[DowTimePeople] = {
+      timeData: List[TimeData]
+  ): List[DowTimePeopleV2] = {
     // for each day:
     //  turn timeData into TimeEvents
     //  sort TimeEvents by time
@@ -87,60 +99,70 @@ object Main extends App {
     //      create a TimeRange, add it to TimeRanges
     //
 
-    DAYS_OF_WEEK.filter(dow => !EXCLUDE_DOW.contains(dow)).map((dow: String) => {
-      val timeData = parsedCSVToTimeDataList(parsedCSV, dow)
-      val filteredTimeData = timeData
-        .filter(td => !EXCLUDE_PEOPLE.contains(td.name))
-      val timeEvents = filteredTimeData
-        .map(td => new TimeEvent(td.timeStart, 1))
-        .concat(timeData.map(td => new TimeEvent(td.timeEnd, -1)))
-      val sorted = timeEvents.sortBy(_.time)
+    DAYS_OF_WEEK.filter(dow => !EXCLUDE_DOW.contains(dow))
+      .map((dow: String) => {
+        val filteredTimeData = timeData.filter(td => td.dow == dow)
 
-      println(sorted)
+        val timeEvents = filteredTimeData
+          .map(td => new TimeEvent(td.timeStart, 1))
+          .concat(filteredTimeData.map(td => new TimeEvent(td.timeEnd, -1)))
 
-      val timeRanges = findTimeRanges(sorted, filteredTimeData.groupBy(_.name).size)
+        val sorted = timeEvents.sortBy(_.time)
+//        println(sorted)
 
-      println(timeRanges)
-      println()
+        val availableTimeRanges =
+          findTimeRanges(sorted, filteredTimeData.groupBy(_.name).size)
+//        println(availableTimeRanges)
+//        println()
 
-      val availableTime = findAvailableTime(timeData, new TimeRange())
-      val availablePeople = findAvailablePeople(availableTime, timeData)
+        val availablePeople =
+          findAvailablePeopleV2(availableTimeRanges, filteredTimeData)
 
-      (dow, availableTime, availablePeople)
-    })
+        (dow, availableTimeRanges, availablePeople)
+      })
   }
   @tailrec
   private def findTimeRanges(
       tes: List[TimeEvent], // should be sorted by time
       max: Int,
       count: Int = 0,
-      tr: TimeRange = new TimeRange(-1,-1),
+      tr: TimeRange = new TimeRange(-1, -1),
       trs: TimeRanges = new TimeRanges(List[TimeRange]())
   ): TimeRanges = {
-    if(tes.nonEmpty){
+    if (tes.nonEmpty) {
       val te = tes.head
 //      println(tes + " " + max + " " + count + " " + tr + " " + trs)
       val newCount = count + te.event
-      if(newCount == max){
-        findTimeRanges(tes.tail, max, newCount, new TimeRange(te.time, tr.end), trs)
-      }else{
-        if(new TimeRange(tr.start, te.time).isValidTime){
-          findTimeRanges(tes.tail, max, newCount, new TimeRange(-1,-1), trs.add(new TimeRange(tr.start, te.time)))
-        }else{
+      if (newCount == max) {
+        findTimeRanges(
+          tes.tail,
+          max,
+          newCount,
+          new TimeRange(te.time, tr.end),
+          trs
+        )
+      } else {
+        if (new TimeRange(tr.start, te.time).isValidTime) {
+          findTimeRanges(
+            tes.tail,
+            max,
+            newCount,
+            new TimeRange(-1, -1),
+            trs.add(new TimeRange(tr.start, te.time))
+          )
+        } else {
           findTimeRanges(tes.tail, max, newCount, tr, trs)
         }
       }
-    }else{
+    } else {
       trs.get
     }
   }
 
   private def parsedCSVToTimeDataList(
-      parsedCSV: List[List[String]],
-      dow: String
+      parsedCSV: List[List[String]]
   ): List[TimeData] = {
     parsedCSV
-      .filter((l: List[String]) => l(1) == dow)
       .map((l: List[String]) =>
         new TimeData(l.head, l(1), l(2).toInt, l(3).toInt)
       )
@@ -171,6 +193,17 @@ object Main extends App {
     timeData
       .filter((data: TimeData) => range.in(data.timeRange))
       .map((data: TimeData) => data.name)
+  }
+
+  private def findAvailablePeopleV2(
+      trs: TimeRanges,
+      timeData: List[TimeData]
+  ): List[String] = {
+    timeData
+      .filter(td =>
+        trs.timeRanges.exists(tr => tr.in(td.timeRange))
+      )
+      .map(td => td.name).distinct
   }
 
   main()
