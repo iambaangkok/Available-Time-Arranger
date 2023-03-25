@@ -31,11 +31,11 @@ Definition for each column
 **Notes**
 - Days at which there are no data for that person will count as that person being NOT available the entire day
 - Example use case for ```Active```: I would likely to be available the same time for every Monday, but this Monday I might be busy, but if I am not busy, I will be available at this time)
-- Currently, the program does not support multiple time ranges in the same day
+- The program supports multiple time ranges in the same day
+  - in a day, only time range(s) where everyone is free will be the output
+- The program supports manual exclusions of name(s) (in case they say "This week I'm frickin busy!") or day of week
 - Currently, the program does not have much error detections
 
 **Planned features**
-- Multiple time ranges in the same day
 - Error detections
-- Manual exclusion of some people (in case they say "This week I'm frickin busy!")
 - Auto report?
