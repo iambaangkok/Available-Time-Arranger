@@ -8,6 +8,8 @@ import scala.annotation.tailrec
 object Main extends App {
 
   private val DAYS_OF_WEEK = List("M", "T", "W", "Th", "F", "S", "Su")
+  private val EXCLUDE_PEOPLE = List("NuT", "Earn")
+  private val EXCLUDE_DOW = List("M", "T", "W", "Th", "S", "Su")
   type Dow = String
   type Name = String
   type DowTimePeople = (Dow, TimeRange, List[Name])
@@ -16,11 +18,13 @@ object Main extends App {
 
     // Read file
     val lines: String = FileReader.readFile(
-      "data/When are you available to play badminton_ - ลงเวลา_2.csv"
+      "data/When are you available to play badminton_ - ลงเวลา_3.csv"
     )
 
     // Parse CSV
     val parsed = SimpleCSVParser.parse(lines, omitFirstLine = false)
+
+
 
     val availableTimeAndPeople = findAvailableTimeAndPeopleV2(parsed)
     val daysWithMaxPeople = getOnlyDaysWithMaxPeople(availableTimeAndPeople)
@@ -83,16 +87,18 @@ object Main extends App {
     //      create a TimeRange, add it to TimeRanges
     //
 
-    DAYS_OF_WEEK.map((dow: String) => {
+    DAYS_OF_WEEK.filter(dow => !EXCLUDE_DOW.contains(dow)).map((dow: String) => {
       val timeData = parsedCSVToTimeDataList(parsedCSV, dow)
-      val timeEvents = timeData
+      val filteredTimeData = timeData
+        .filter(td => !EXCLUDE_PEOPLE.contains(td.name))
+      val timeEvents = filteredTimeData
         .map(td => new TimeEvent(td.timeStart, 1))
         .concat(timeData.map(td => new TimeEvent(td.timeEnd, -1)))
       val sorted = timeEvents.sortBy(_.time)
 
       println(sorted)
 
-      val timeRanges = findTimeRanges(sorted, timeData.groupBy(_.name).size)
+      val timeRanges = findTimeRanges(sorted, filteredTimeData.groupBy(_.name).size)
 
       println(timeRanges)
       println()
@@ -111,8 +117,8 @@ object Main extends App {
       tr: TimeRange = new TimeRange(-1,-1),
       trs: TimeRanges = new TimeRanges(List[TimeRange]())
   ): TimeRanges = {
-    val te = tes.head
     if(tes.nonEmpty){
+      val te = tes.head
 //      println(tes + " " + max + " " + count + " " + tr + " " + trs)
       val newCount = count + te.event
       if(newCount == max){
