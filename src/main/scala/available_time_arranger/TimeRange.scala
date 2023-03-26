@@ -9,8 +9,9 @@ class TimeRange(val start: Int = 0, val end: Int = 2400) {
     new TimeRange(start, end)
   }
 
+
   def in(other: TimeRange): Boolean = {
-    other.start <= start && end <= other.end
+    other.start <= start || end <= other.end
   }
 
   def isValidTime: Boolean = {

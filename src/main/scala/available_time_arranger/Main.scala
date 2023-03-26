@@ -21,8 +21,6 @@ object Main extends App {
       "data/When are you available to play badminton_ - ลงเวลา_3.csv"
     )
 
-//    println(lines)
-
     // Parse CSV
     val parsed = SimpleCSVParser.parse(lines, omitFirstLine = false)
 
@@ -31,18 +29,29 @@ object Main extends App {
       timeData.filter(td => !EXCLUDE_PEOPLE.contains(td.name))
 
     // Calculations
-    val availableTimeAndPeople = findAvailableTimeAndPeopleV2(filteredTimeData)
-    val daysWithMaxPeople = getOnlyDaysWithMaxPeopleV2(availableTimeAndPeople)
-    val sortedByPeopleCount = availableTimeAndPeople.sortBy(_._3.length).reverse
+    val availableTimeAndPeople1 = findAvailableTimeAndPeople(parsed)
+    val daysWithMaxPeople1 = getOnlyDaysWithMaxPeople(availableTimeAndPeople1)
+    val sortedByPeopleCount1 = availableTimeAndPeople1.sortBy(_._3.length).reverse
+
+    // CalculationsV2
+    val availableTimeAndPeople2 = findAvailableTimeAndPeopleV2(filteredTimeData)
+    val daysWithMaxPeople2 = getOnlyDaysWithMaxPeopleV2(availableTimeAndPeople2)
+    val sortedByPeopleCount2 = availableTimeAndPeople2.sortBy(_._3.length).reverse
 
     // Outputs
+//    printDowTimePeopleList(
+//      availableTimeAndPeople1,
+//      Some("Available time and people each day:")
+//    )
+//    printDowTimePeopleList(daysWithMaxPeople1, Some("Only days with max people:"))
+//    printDowTimePeopleList(sortedByPeopleCount1, Some("Sorted by people count:"))
 
     printDowTimePeopleList(
-      availableTimeAndPeople,
-      Some("Available time and people each day:")
+      availableTimeAndPeople2,
+      Some("Available time and people each day2:")
     )
-    printDowTimePeopleList(daysWithMaxPeople, Some("Only days with max people:"))
-    printDowTimePeopleList(sortedByPeopleCount, Some("Sorted by people count:"))
+    printDowTimePeopleList(daysWithMaxPeople2, Some("Only days with max people2:"))
+    printDowTimePeopleList(sortedByPeopleCount2, Some("Sorted by people count2:"))
 
   }
 
