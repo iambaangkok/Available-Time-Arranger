@@ -8,7 +8,7 @@ import scala.annotation.tailrec
 object Main extends App {
 
   private val DAYS_OF_WEEK = List("M", "T", "W", "Th", "F", "S", "Su")
-  private val EXCLUDE_PEOPLE = List("Nut", "Earn")
+  private val EXCLUDE_PEOPLE = List()//List("Nut", "Earn")
   private val EXCLUDE_DOW = List()//List("M", "T", "W", "Th", "S", "Su")
   type Dow = String
   type Name = String
@@ -20,6 +20,8 @@ object Main extends App {
     val lines: String = FileReader.readFile(
       "data/When are you available to play badminton_ - ลงเวลา_3.csv"
     )
+
+//    println(lines)
 
     // Parse CSV
     val parsed = SimpleCSVParser.parse(lines, omitFirstLine = false)
